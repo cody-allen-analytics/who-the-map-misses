@@ -1,0 +1,48 @@
+# Data sources. URLs move; if a download fails, fetch the file manually from the landing
+# page and save it in data/raw/ under the filename given here. Nothing in data/ is committed.
+
+iter_2020:
+  description: INEGI Censo de Población y Vivienda 2020, Principales resultados por localidad (ITER), national CSV
+  url: https://www.inegi.org.mx/contenidos/programas/ccpv/2020/datosabiertos/iter/iter_00_cpv2020_csv.zip
+  landing_page: https://www.inegi.org.mx/programas/ccpv/2020/default.html#Datos_abiertos
+  data_dictionary: https://en.www.inegi.org.mx/app/scitel/doc/descriptor/fd_iter_cpv2020.pdf
+  filename: iter_00_cpv2020_csv.zip
+  license: INEGI Términos de Libre Uso de la Información
+
+rwi:
+  description: Meta Data for Good Relative Wealth Index (2.4 km tiles)
+  hdx_api: https://data.humdata.org/api/3/action/package_show
+  hdx_package: relative-wealth-index
+  landing_page: https://data.humdata.org/dataset/relative-wealth-index
+  country_iso3: MEX
+  filename: mex_relative_wealth_index.csv
+  license: See the HDX dataset page (record the exact license in docs/data_card.md)
+
+alphaearth:
+  description: Google DeepMind AlphaEarth Foundations Satellite Embedding, annual 10 m, 64 bands
+  ee_collection: GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL
+  catalog_page: https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_SATELLITE_EMBEDDING_V1_ANNUAL
+  year: 2020
+  buffer_m: 500
+  scale_m: 10
+  drive_folder: mapaudit_alphaearth
+  file_glob: alphaearth_2020_part*.csv
+  attribution: The AlphaEarth Foundations Satellite Embedding dataset is produced by Google and Google DeepMind.
+  license: CC-BY 4.0
+
+nightlights:
+  description: VIIRS Nighttime Day/Night Annual Band Composites V2.1 (exported together with AlphaEarth)
+  ee_collection: NOAA/VIIRS/DNB/ANNUAL_V21
+  band: average_masked
+  catalog_page: https://developers.google.com/earth-engine/datasets/catalog/NOAA_VIIRS_DNB_ANNUAL_V21
+
+# Optional: CONAPO's official 2020 locality marginalization index, used only to validate the
+# CONAPO-style index this project rebuilds from ITER. Column names vary between releases, so
+# set them here after inspecting the file. CONAPO's normalized index is low for MORE marginalized
+# places, hence higher_is_more_marginalized: false.
+conapo_iml_2020:
+  enabled: false
+  filename: conapo_iml_2020.csv
+  key_column: CVE_LOC          # 9-digit locality key (ENT+MUN+LOC); adjust to the file
+  index_column: IMN_2020       # adjust to the file
+  higher_is_more_marginalized: false

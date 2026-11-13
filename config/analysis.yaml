@@ -1,0 +1,75 @@
+# Analysis parameters. Everything that affects a reported number lives here, so the
+# pre-analysis plan can point to an exact, version-controlled configuration.
+
+seed: 20261110
+
+indigenous:
+  # ind_hh_share  = population in Indigenous census households / total population (PHOG_IND / POBTOT)
+  # ind_lang_share = speakers of an Indigenous language / population aged 3+ (P3YM_HLI / P_3YMAS)
+  share_column: ind_hh_share
+  # INPI/CDI convention: a locality is "Indigenous" when >= 40% of its population lives in
+  # Indigenous households. Verify against current INPI documentation before publishing.
+  majority_threshold: 0.40
+
+geography:
+  city_min_population: 50000   # "remoteness" = km to the nearest locality of at least this size
+  urban_min_population: 2500   # INEGI's urban/rural cut-off
+
+scope:
+  # ITER gives one coordinate per locality. A city of a million people is a single point, so it
+  # would fall into one 2.4 km RWI tile while the map has dozens of tiles over it. Map-based
+  # analyses are therefore restricted to rural localities, which INEGI maps as points and which
+  # contain most Indigenous-majority communities. Tiles holding any urban locality are dropped.
+  # Extending to cities needs AGEB-level census data (see docs/methods.md, "Extensions").
+  max_locality_population: 2499
+
+labels:
+  primary: wealth_dhs_like     # what an RWI-style map is trained to reproduce
+
+audit:
+  bootstrap_reps: 300          # municipality-cluster bootstrap for decile-conditional errors
+  weight_by_population: true
+
+survey:                         # simulated household survey used to train challenger models
+  n_municipalities: 400
+  localities_per_municipality: 8
+  dwellings_per_locality: 20
+  min_dwellings: 10
+  replications: 20
+
+models:
+  cv_folds: 5
+  sae_n_components: 20         # PCs of the 64-d embeddings used by the linear SAE model
+  gbm:
+    max_iter: 300
+    learning_rate: 0.05
+    max_leaf_nodes: 31
+    min_samples_leaf: 20
+    l2_regularization: 1.0
+
+conformal:
+  alpha: 0.10                  # 90% prediction intervals
+
+allocation:
+  target_population_share: 0.20   # "poorest 20% of people" targeting rule
+  budget_mxn: 1000000000           # stylized FAIS-like budget (1 billion pesos)
+
+# Overrides applied when running with --demo (synthetic data, small and fast for CI).
+demo:
+  synthetic:
+    n_states: 6
+    n_municipalities: 150
+    mean_localities_per_municipality: 45
+    rwi_indigenous_bias_sd: 0.6
+    rwi_coverage_indigenous_logit: -0.8
+    embedding_indigenous_shift: 0.6
+  audit:
+    bootstrap_reps: 100
+  survey:
+    n_municipalities: 70
+    localities_per_municipality: 6
+    replications: 4
+  models:
+    cv_folds: 3
+    gbm:
+      max_iter: 150
