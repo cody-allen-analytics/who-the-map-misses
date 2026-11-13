@@ -1,0 +1,43 @@
+cff-version: 1.2.0
+message: "If you use this code or its findings, please cite it as below."
+title: "Who the Map Misses: Auditing machine-learning poverty maps for Indigenous communities in Mexico"
+type: software
+authors:
+  - family-names: "Allen"
+    given-names: "Cody"
+repository-code: "https://github.com/cody-allen-analytics/who-the-map-misses"
+url: "https://cody-allen-analytics.github.io/who-the-map-misses/"
+license: MIT
+version: 0.1.0
+date-released: 2026-11-10
+keywords:
+  - algorithmic audit
+  - poverty mapping
+  - small area estimation
+  - conformal prediction
+  - Indigenous data
+references:
+  - type: article
+    authors:
+      - family-names: Aiken
+        given-names: Emily
+      - family-names: Rolf
+        given-names: Esther
+      - family-names: Blumenstock
+        given-names: Joshua
+    title: "Fairness and representation in satellite-based poverty maps: Evidence of urban-rural disparities and their impacts on downstream policy"
+    year: 2023
+    conference:
+      name: "IJCAI 2023"
+  - type: article
+    authors:
+      - family-names: Corral
+        given-names: Paul
+      - family-names: Henderson
+        given-names: Heath
+      - family-names: Segovia
+        given-names: Sandra
+    title: "Poverty mapping in the age of machine learning"
+    journal: "Journal of Development Economics"
+    volume: 172
+    year: 2025

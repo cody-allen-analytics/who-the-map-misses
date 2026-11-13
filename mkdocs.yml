@@ -1,0 +1,70 @@
+site_name: Who the Map Misses
+site_description: Auditing machine-learning poverty maps for Indigenous communities in Mexico
+site_url: https://cody-allen-analytics.github.io/who-the-map-misses/
+repo_url: https://github.com/cody-allen-analytics/who-the-map-misses
+repo_name: who-the-map-misses
+edit_uri: edit/main/docs/
+copyright: Code MIT · Text CC BY 4.0 · Data under their providers' licenses
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: white
+      accent: blue
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: blue
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - search.highlight
+
+nav:
+  - Home: index.md
+  - Results: results.md
+  - Research design:
+      - Pre-analysis plan: pre_analysis_plan.md
+      - Methods: methods.md
+      - Validation on synthetic data: validation.md
+  - Documentation:
+      - Data card: data_card.md
+      - Model card: model_card.md
+      - Ethics & data sovereignty: ethics.md
+      - Reproduce: reproduce.md
+  - Lab notebook:
+      - blog/index.md
+
+plugins:
+  - search
+  - blog:
+      blog_dir: blog
+      post_date_format: long
+      draft: false
+      draft_on_serve: true
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - footnotes
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.arithmatex:
+      generic: true
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
