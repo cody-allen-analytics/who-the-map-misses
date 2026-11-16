@@ -1,15 +1,35 @@
-# Ethics & Indigenous data sovereignty
+# Ethics & Indigenous Data Sovereignty
+# Ética y soberanía de datos indígenas
 
-!!! abstract "Resumen en español"
-    Este proyecto evalúa si un mapa de pobreza elaborado con aprendizaje automático (el Índice de Riqueza
-    Relativa de Meta) subestima la pobreza de las comunidades indígenas de México, comparándolo con el
-    Censo de Población y Vivienda 2020 del INEGI, y cuánto costaría ese error en la distribución de
-    recursos públicos. Solo se publican resultados agregados: ninguna tabla identifica localidades y los
-    mapas muestran patrones regionales, no comunidades. Las comunidades estudiadas no participaron en el
-    diseño de esta investigación. Si usted pertenece a una comunidad afectada, o colabora con una, y tiene
-    observaciones u objeciones, puede abrir un *issue* en GitHub o escribir al autor (los datos de contacto
-    están en `CITATION.cff`). Cada solicitud recibe respuesta y queda registrada en esta página.
+## Abstract
+## Resumen
 
+**EN:** This project evaluates whether a poverty map created using machine learning (the Meta Relative Wealth Index) underestimates poverty in Indigenous communities in Mexico, comparing it to the 2020 Population and Housing Census by INEGI, and how much this error would cost in the distribution of public resources.
+
+**ES:** Este proyecto evalúa si un mapa de pobreza creado mediante aprendizaje automático (el Meta Relative Wealth Index) subestima la pobreza en comunidades indígenas de México, comparándolo con el Censo de Población y Vivienda 2020 del INEGI, y cuánto costaría este error en la distribución de recursos públicos.
+
+**EN:** Only aggregated results are published: no tables identify localities, and the maps show regional patterns, not communities. The communities studied did not participate in the design of this research.
+
+**ES:** Solo se publican resultados agregados: ninguna tabla identifica localidades, y los mapas muestran patrones regionales, no comunidades. Las comunidades estudiadas no participaron en el diseño de esta investigación.
+
+## Community Feedback
+## Retroalimentación de la comunidad
+
+**EN:** If you belong to an affected community, or collaborate with one, and have observations or objections, you can:
+
+**ES:** Si perteneces a una comunidad afectada, o colaboras con una, y tienes observaciones u objeciones, puedes:
+
+- **EN:** Open an issue on GitHub, or
+- **ES:** Abrir un *issue* en GitHub, o
+- **EN:** Write to the author (contact information is in `[CITATION.cff]`).
+- **ES:** Escribir al autor (la información de contacto está en `[CITATION.cff]`).
+
+## Community Feedback
+
+If you belong to an affected community, or collaborate with one, and have observations or objections, you can:
+
+- Open an issue on GitHub, or
+- Write to the author (contact information is in `[CITATION.cff]` <!-- replace with the actual file, e.g. CITATION.cff, CONTACT.md, README -->).
 ## Studying the algorithm, not the communities
 
 This project audits a tool and the institutions that use it. It does not build a new instrument for
