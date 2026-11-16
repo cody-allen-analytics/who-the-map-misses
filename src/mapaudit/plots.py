@@ -556,39 +556,80 @@ def fig_allocation(by_share: pd.DataFrame, by_model: pd.DataFrame, theme: dict) 
     return fig
 
 
+# Publication rule for maps (pre-analysis plan §10, ethics page): published maps show regions, not
+# communities. Tiles are averaged into hexagons about MAP_HEX_KM across, and a hexagon holding fewer
+# than MAP_MIN_TILES map tiles is not drawn, so no single locality can be read off the figure.
+MAP_HEX_KM = 40
+MAP_MIN_TILES = 5
+
+
+def _hex_grid(lon: np.ndarray, lat: np.ndarray) -> tuple[tuple[int, int], tuple[float, ...]]:
+    """Hexbin grid size and extent for hexagons about MAP_HEX_KM across that look regular on a map
+    whose latitude axis is stretched by 1 / cos(mean latitude)."""
+    coslat = float(np.cos(np.radians(np.nanmean(lat))))
+    xmin, xmax, ymin, ymax = np.nanmin(lon), np.nanmax(lon), np.nanmin(lat), np.nanmax(lat)
+    xr, yr = max(xmax - xmin, 1e-6), max(ymax - ymin, 1e-6)
+    nx = max(1, int(np.ceil(xr / (MAP_HEX_KM / (111.32 * coslat)))))
+    # matplotlib's hexagons are regular when row spacing = sqrt(3) x column spacing on screen.
+    ny = max(1, round(float(yr * nx / (np.sqrt(3) * xr * coslat))))
+    return (nx, ny), (xmin, xmin + xr, ymin, ymin + yr)
+
+
+def _hex_means(ax, lon, lat, values, weights, cmap, gridsize, extent):
+    """Population-weighted mean of ``values`` per hexagon; hexagons with too few tiles stay empty."""
+
+    def weighted_mean(idx) -> float:
+        idx = np.asarray(idx, dtype=int)
+        w = weights[idx]
+        return float(np.average(values[idx], weights=w)) if w.sum() > 0 else np.nan
+
+    return ax.hexbin(
+        lon,
+        lat,
+        C=np.arange(len(lon)),
+        reduce_C_function=weighted_mean,
+        gridsize=gridsize,
+        extent=extent,
+        mincnt=MAP_MIN_TILES,
+        cmap=cmap,
+        linewidths=0,
+    )
+
+
 def fig_map(tiles: pd.DataFrame, theme: dict) -> plt.Figure:
+    """Regional pattern of Indigenous share and rank error, aggregated to hexagons (see MAP_HEX_KM)."""
     fig, axes = plt.subplots(1, 2, figsize=(9.6, 4.6))
     fig.subplots_adjust(left=0.01, right=0.99, top=0.84, bottom=0.12, wspace=0.08)
     seq = LinearSegmentedColormap.from_list("seq", theme["seq"])
     div = LinearSegmentedColormap.from_list("div", theme["div"])
-    lim = float(np.nanpercentile(np.abs(tiles["rank_error"]), 95))
+    lon, lat = tiles["lon"].to_numpy(float), tiles["lat"].to_numpy(float)
+    pop = tiles["pop"].to_numpy(float)
+    gridsize, extent = _hex_grid(lon, lat)
     panels = [
-        (axes[0], tiles["ind_share"], seq, 0, 1, "Indigenous population share"),
-        (axes[1], tiles["rank_error"], div, -lim, lim, "Map rank − census rank (pp)"),
+        (axes[0], tiles["ind_share"].to_numpy(float), seq, False, "Indigenous population share"),
+        (axes[1], tiles["rank_error"].to_numpy(float), div, True, "Map rank − census rank (pp)"),
     ]
-    order = np.argsort(np.abs(tiles["rank_error"].to_numpy()))
-    for ax, values, cmap, vmin, vmax, label in panels:
-        sc = ax.scatter(
-            tiles["lon"].to_numpy()[order],
-            tiles["lat"].to_numpy()[order],
-            c=values.to_numpy()[order],
-            cmap=cmap,
-            vmin=vmin,
-            vmax=vmax,
-            s=2.2,
-            lw=0,
-            rasterized=True,
-        )
-        ax.set_aspect(1 / np.cos(np.radians(np.nanmean(tiles["lat"]))))
+    for ax, values, cmap, symmetric, label in panels:
+        ok = np.isfinite(lon) & np.isfinite(lat) & np.isfinite(values) & (pop > 0)
+        hexes = _hex_means(ax, lon[ok], lat[ok], values[ok], pop[ok], cmap, gridsize, extent)
+        if symmetric:
+            means = np.abs(np.asarray(hexes.get_array(), float))
+            lim = float(np.nanpercentile(means, 95)) if means.size else 0.0
+            hexes.set_clim(-(lim or 1.0), lim or 1.0)
+        else:
+            hexes.set_clim(0, 1)
+        ax.set_xlim(extent[0], extent[1])
+        ax.set_ylim(extent[2], extent[3])
+        ax.set_aspect(1 / np.cos(np.radians(np.nanmean(lat))))
         ax.axis("off")
-        cbar = fig.colorbar(sc, ax=ax, orientation="horizontal", fraction=0.04, pad=0.02, shrink=0.6)
+        cbar = fig.colorbar(hexes, ax=ax, orientation="horizontal", fraction=0.04, pad=0.02, shrink=0.6)
         cbar.outline.set_visible(False)
         cbar.ax.tick_params(labelsize=7.5, colors=theme["muted"], labelcolor=theme["ink2"])
         cbar.set_label(label, fontsize=8, color=theme["ink2"])
     _titles(
         fig,
         "Where the map and the census disagree",
-        "Each dot is a 2.4 km map tile with rural localities. Red = map ranks the tile wealthier than the census does.",
+        f"{MAP_HEX_KM} km hexagons, each the population-weighted mean of {MAP_MIN_TILES}+ map tiles. Red = map ranks the area wealthier than the census.",
         theme,
     )
     return fig

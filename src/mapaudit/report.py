@@ -336,7 +336,11 @@ def write_page(mode: str, root: Path | None = None) -> Path:
                                             "misallocation_share_mean": ("Budget misallocated", "pct"),
                                             "ape_median_mean": ("Median municipal error", "pct")}, None,
            "**Challenger models instead of the census** (mean over survey draws):")]),
-        ("map", "Map", None, []),
+        ("map", "Map",
+         f"Regional patterns only: each hexagon (about {plots.MAP_HEX_KM} km across) is the population-weighted "
+         f"mean of at least {plots.MAP_MIN_TILES} map tiles, and sparser hexagons are not drawn, so no single "
+         "community can be read off the map ([publication rules](ethics.md#publication-rules)).",
+         []),
     ]  # fmt: skip
     if (rob := _load(t, "robustness")) is not None:
         sections_rob = md_table(

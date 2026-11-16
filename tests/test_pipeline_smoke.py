@@ -6,6 +6,7 @@ import warnings
 from mapaudit import pipeline, report
 from mapaudit.config import get_paths
 from mapaudit.plots import FigureLayoutWarning
+from mapaudit.publication import identifier_columns
 
 
 def test_demo_pipeline_end_to_end(tmp_repo):
@@ -46,3 +47,5 @@ def test_demo_pipeline_end_to_end(tmp_repo):
     page = (tmp_repo / "docs" / "validation.md").read_text()
     assert "Synthetic data" in page and "Headline numbers" in page
     assert json.loads((paths.tables / "build_summary.json").read_text())["localities"] > 0
+    # Publication rule: no result table may identify a locality or a map tile.
+    assert identifier_columns(paths.tables) == []

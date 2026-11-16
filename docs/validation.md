@@ -425,6 +425,8 @@ Misallocated share = half the sum of absolute differences between map-based and 
 
 ## Map
 
+Regional patterns only: each hexagon (about 40 km across) is the population-weighted mean of at least 5 map tiles, and sparser hexagons are not drawn, so no single community can be read off the map ([publication rules](ethics.md#publication-rules)).
+
 ![Map](assets/figures/demo/map.png#only-light)
 ![Map](assets/figures/demo/map-dark.png#only-dark)
 

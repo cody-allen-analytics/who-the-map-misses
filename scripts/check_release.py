@@ -1,4 +1,5 @@
-"""Pre-share checklist: fails if placeholders remain or real results are missing.
+"""Pre-share checklist: fails if placeholders remain, real results are missing, or a result table
+identifies a locality or map tile (the publication rules in docs/ethics.md).
 
 python scripts/check_release.py
 """
@@ -48,6 +49,15 @@ def main() -> int:
     for req in REQUIRED:
         if not (ROOT / req).exists():
             problems.append(f"missing real-data output: {req} (run notebooks 02-06)")
+    sys.path.insert(0, str(ROOT / "src"))
+    from mapaudit.publication import identifier_columns
+
+    real = ROOT / "results" / "real"
+    if real.exists():
+        problems += [
+            f"results/real/{hit}: locality- or tile-level column (only aggregates may be published)"
+            for hit in identifier_columns(real)
+        ]
     if problems:
         print("Not ready to share:\n  " + "\n  ".join(problems))
         return 1
