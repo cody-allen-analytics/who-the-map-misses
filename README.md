@@ -50,8 +50,11 @@ Full results with a table under every figure: **[project website](https://cody-a
 - **Design decisions are documented.** For example, map comparisons are restricted to rural localities
   because the census gives each city a single point ([methods](docs/methods.md#units-and-scope)).
 - **No hand-typed numbers.** Every number on the website is generated from `results/real/tables`.
-- **Ethics.** The audit studies the algorithm, not the communities, and follows the CARE principles
-  for Indigenous data governance ([ethics](docs/ethics.md)).
+- **Indigenous data sovereignty.** The audit studies the algorithm, not the communities. Only aggregates
+  are published: no table identifies a locality (a test enforces it), maps show ~40 km regions rather than
+  communities, and locality-level predictions stay unpublished. Affected communities can ask for a result
+  to be corrected or withdrawn, and the page states openly where the project falls short of the CARE
+  principles ([ethics & Indigenous data sovereignty](docs/ethics.md), with a summary in Spanish).
 
 ## Quickstart
 
@@ -69,13 +72,15 @@ Real data (INEGI census, Meta RWI, Earth Engine export): see **[Reproduce](docs/
 config/            analysis parameters and data sources (everything that affects a number)
 src/mapaudit/      census.py  labels.py  rwi.py  audit.py  survey.py  sae.py  ml.py  conformal.py
                    allocation.py  simulate.py  pipeline.py  report.py  plots.py  gee.py  cli.py
-                   notebook.py (notebook helpers)  upload.py (web-upload fallback, no git)
+                   notebook.py (notebook helpers)  publication.py (only aggregates are published)
+                   upload.py (web-upload fallback, no git)
 notebooks/         00_setup → 01_demo → 02_ground_truth → 03_audit → 04_satellite_features
                    → 05_challengers → 06_report_and_release (thin drivers over the package)
 scripts/           gee_export_alphaearth.py (Earth Engine export), check_release.py
 tests/             unit tests, planted-bias validation, end-to-end smoke test
 results/real/      committed tables and figures
-docs/              website: results, pre-analysis plan, methods, data/model cards, lab notebook
+docs/              website: results, pre-analysis plan, methods, data/model cards, ethics & Indigenous
+                   data sovereignty, lab notebook
 ```
 
 ## Data
@@ -92,7 +97,9 @@ Raw data is not committed; notebook 02 downloads it. Details and known issues: [
 ## Limitations
 
 Rural localities only; census labels describe dwellings and education, not income; the RWI and the
-census are a year or more apart; results describe places, not households. See [methods](docs/methods.md#limitations).
+census are a year or more apart; results describe places, not households; the census's Indigenous
+measures are based on language, not self-identification. See [methods](docs/methods.md#limitations)
+and [who counts as Indigenous here](docs/ethics.md#who-counts-as-indigenous-here).
 
 ## Citation
 

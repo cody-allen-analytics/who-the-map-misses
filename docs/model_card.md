@@ -22,6 +22,9 @@ errors, **not** to be used for targeting.
 ## Out of scope
 
 - Selecting beneficiaries or ranking specific communities for programs.
+- Publishing or sharing locality-level predictions: they would be a deprivation map of Indigenous
+  communities made without their participation ([publication rules](ethics.md#publication-rules)).
+- Any use that affects specific Indigenous communities without their free, prior and informed consent.
 - Urban areas (see the scope note in [Methods](methods.md#units-and-scope)).
 - Years other than 2020 without revalidation.
 
@@ -53,7 +56,7 @@ deprived places. See [Results](results.md).
 
 Errors are not evenly distributed: the project exists to measure that. Any reuse of these models
 should report group-level performance and should involve the communities affected. See
-[Ethics & data sovereignty](ethics.md).
+[Ethics & Indigenous data sovereignty](ethics.md).
 
 ## Caveats
 

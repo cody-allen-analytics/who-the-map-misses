@@ -39,7 +39,7 @@ nav:
   - Documentation:
       - Data card: data_card.md
       - Model card: model_card.md
-      - Ethics & data sovereignty: ethics.md
+      - Ethics & Indigenous data sovereignty: ethics.md
       - Reproduce: reproduce.md
   - Lab notebook:
       - blog/index.md

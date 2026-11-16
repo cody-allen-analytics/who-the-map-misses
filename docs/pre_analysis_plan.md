@@ -133,6 +133,20 @@ and 2.5th-97.5th percentiles across replications.
   remedy is then group-aware calibration or small area estimation, not a better map.
 - If the RWI's quadkey join fails for more than 5% of tiles, the audit stops until the cause is found.
 
+## 10. Publication and data governance
+
+Fixed before the real-data analysis; the reasons are on the [ethics page](ethics.md).
+
+- Only aggregated results are published. No table carries a locality or map-tile identifier or
+  coordinates; the pipeline's end-to-end test and the release check fail if one does.
+- Maps are aggregated to hexagons about 40 km across, each the population-weighted mean of at least
+  five map tiles; hexagons with fewer tiles are not drawn.
+- No locality is named in published results, and the challenger models' locality-level predictions are
+  not published.
+- Requests from affected Indigenous communities to correct, contextualize or withdraw a result take
+  precedence over this plan. They are logged on the ethics page, and any resulting change is recorded in
+  the deviations log below.
+
 ## Deviations log
 
 | Date | Section | Change | Reason |

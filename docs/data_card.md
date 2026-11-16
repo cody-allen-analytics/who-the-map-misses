@@ -33,7 +33,15 @@ produced by Google and Google DeepMind."*
 - **Coverage:** the RWI only covers populated tiles as Meta's population layers saw them.
   Unmatched localities are a finding (H1), not just missing data.
 - **Indigenous identification:** household-based and language-based census measures differ, and both
-  differ from self-identification. The pipeline reports both measures.
+  differ from self-identification, the criterion Mexico's Constitution sets. The pipeline reports both
+  measures; see [who counts as Indigenous here](ethics.md#who-counts-as-indigenous-here).
+
+## Indigenous data governance
+
+Every source describes Indigenous peoples and their lands, and none involved them in decisions about
+this use. The provenance of each source, the project's gaps under the CARE principles, and how affected
+communities can request a correction or withdrawal are on the
+[ethics & Indigenous data sovereignty](ethics.md#whose-data-these-are) page.
 
 ## If the RWI does not cover Mexico
 
@@ -46,7 +54,10 @@ If the Mexico file is missing:
 
 Record which path was taken in the deviations log of the [pre-analysis plan](pre_analysis_plan.md#deviations-log).
 
-## What is committed
+## What is published
 
-Only aggregated outputs: tables in `results/real/tables` and figures. No raw files and no
-locality-level rows are committed.
+Only aggregated outputs: the tables in `results/real/tables` and figures, under the
+[publication rules](ethics.md#publication-rules). No table carries a locality or map-tile identifier or
+coordinates (a test enforces this), maps are aggregated to hexagons of at least five map tiles, and the
+challenger models' locality-level predictions are not published. Raw files stay local because each
+carries its provider's license.
