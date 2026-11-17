@@ -7,15 +7,15 @@
 
 ## Does the audit find a planted bias, and only when it is there?
 
-Two fresh synthetic worlds drawn with the demo settings, one with the planted bias and one without. Without it, the coefficient and the equally-poor gap should be near zero. The ranked-equally gap need not be: when groups differ in average wealth, a map whose errors ignore group still shows a gap among places it ranks the same (see [Methods](methods.md#two-views-of-fairness)).
+Two fresh synthetic worlds drawn with the demo settings, one with the planted bias and one without. Without it, the coefficient and the equally-poor gap should be near zero. The ranked-equally gap need not be: when groups differ in average wealth, a map whose errors ignore group still shows a gap among places it ranks the same (see [Methods](methods.md#two-views-of-fairness)). The no-bias benchmark estimates that gap from each world's own data; the ranked-equally gap should stay within its range without the planted bias and exceed it with the bias.
 
 ![Validation: estimated coefficients with and without planted bias](assets/figures/demo/validation.png#only-light)
 ![Validation: estimated coefficients with and without planted bias](assets/figures/demo/validation-dark.png#only-dark)
 
-| World | Planted RWI bias (SD) | Rank-error coef (pp) | CI low | CI high | Gap: equally poor (pp) | Gap: ranked equally (pp) | Coverage coef |
-|---|---|---|---|---|---|---|---|
-| Bias planted | 0.600 | +25.5 | +20.2 | +30.9 | +12.0 | +12.9 | -0.072 |
-| No bias planted | 0.000 | +0.2 | -4.4 | +4.8 | -0.8 | +4.3 | -0.010 |
+| World | Planted RWI bias (SD) | Rank-error coef (pp) | CI low | CI high | Gap: equally poor (pp) | Gap: ranked equally (pp) | No-bias benchmark (pp) | Benchmark 97.5% (pp) | Coverage coef |
+|---|---|---|---|---|---|---|---|---|---|
+| Bias planted | 0.600 | +25.5 | +20.2 | +30.9 | +12.0 | +12.9 | +3.9 | +5.6 | -0.072 |
+| No bias planted | 0.000 | +0.2 | -4.4 | +4.8 | -0.8 | +4.3 | +5.3 | +6.6 | -0.010 |
 
 ## Data at a glance
 
@@ -27,7 +27,7 @@ Two fresh synthetic worlds drawn with the demo settings, one with the planted bi
 
 - **Rank bias.** Holding true wealth decile, settlement size, remoteness, altitude, and state fixed, the map ranks an all-Indigenous tile **+20.3 percentile points** higher than a non-Indigenous tile relative to the census (95% CI +15.1 to +25.5; one-sided p = 1.14e-14, Holm-adjusted p = 2.27e-14).
 - **Within the same true decile**, Indigenous tiles' average rank error exceeds non-Indigenous tiles' by +8.6 points (weighted by Indigenous population).
-- **Among places the map ranks the same**, Indigenous tiles' rank error is +13.8 points higher, i.e. they are poorer than the map says. This view can show a gap even for a map with group-blind errors, because groups differ in average wealth.
+- **Among places the map ranks the same**, Indigenous tiles' rank error is +13.8 points higher, i.e. they are poorer than the map says. A map with group-blind errors would show +7.8 points on these data (95% range +5.7 to +9.8), because groups differ in average wealth; only a gap beyond that range points to errors specific to Indigenous places.
 - **Coverage.** 90.9% of the Indigenous rural population lies inside a map tile, vs. 92.8% of the non-Indigenous rural population.
 - **Money.** Using the map instead of the census in a FAIS-style formula changes the allocation to Indigenous-majority municipalities by **-26.3%** (-102.1 million pesos per billion allocated); 11.6% of the whole budget goes to the wrong municipalities.
 - **Targeting.** Selecting the poorest 20% by the map leaves out 49% of the truly poorest Indigenous population vs. 35% of the truly poorest non-Indigenous population.
@@ -89,7 +89,7 @@ Metrics exist only where the census truth is known. Share of the in-scope popula
 
 ## Places the map ranks the same (calibration view)
 
-Read with the previous figure: when groups differ in average wealth, a map whose errors ignore group can pass the separation test and still fail this one.
+Read with the previous figure: when groups differ in average wealth, a map whose errors ignore group can pass the separation test and still fail this one. The headline numbers therefore compare the gap with a no-bias benchmark computed from these data: the map's values shuffled among tiles at the same census percentile, which keeps the real groups and map noise but removes any group-specific error.
 
 ![Places the map ranks the same (calibration view)](assets/figures/demo/map_decile_errors.png#only-light)
 ![Places the map ranks the same (calibration view)](assets/figures/demo/map_decile_errors-dark.png#only-dark)

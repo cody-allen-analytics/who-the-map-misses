@@ -216,6 +216,7 @@ def run_audit(
     main = tables["audit_regressions"].iloc[-1]
     alloc = tables["rwi_allocation"].set_index("group")
     tgt = tables["rwi_targeting"].set_index("group")
+    no_bias = audit_mod.calibration_benchmark(tiles, cfg["audit"]["calibration_permutations"], rng)
     summary = {
         "population_covered_indigenous": cov.loc["Indigenous", "share_population_covered"],
         "population_covered_non_indigenous": cov.loc["Non-Indigenous", "share_population_covered"],
@@ -227,6 +228,9 @@ def run_audit(
         "coverage_p_holm": float(tables["confirmatory_tests"]["p_holm"].iloc[0]),
         "decile_conditional_gap_pp": _decile_gap(tables["decile_errors"]),
         "calibration_gap_pp": _decile_gap(tables["map_decile_errors"], by="map_decile"),
+        # What a map with group-blind errors would show on these data (see audit.calibration_benchmark).
+        "calibration_gap_no_bias_pp": no_bias["mean"],
+        "calibration_gap_no_bias_range_pp": [no_bias["p025"], no_bias["p975"]],
         "rwi_misallocation_share": float(tables["rwi_allocation_errors"]["misallocation_share"].iloc[0]),
         **{f"compression_{k}": v for k, v in audit_mod.compression_check(tiles).items()},
         "rwi_exclusion_indigenous": tgt.loc["Indigenous", "exclusion_rate"],
@@ -323,6 +327,7 @@ def simulate(mode: str = "real", root: Path | None = None) -> dict:
 def validate(root: Path | None = None) -> pd.DataFrame:
     """Planted-bias check: the audit must detect planted effects and stay quiet without them."""
     cfg, paths = load_config("demo", root), get_paths("demo", root)
+    rng = np.random.default_rng(cfg["seed"])
     rows = []
     worlds = {
         "Bias planted": cfg["synthetic"],
@@ -345,6 +350,7 @@ def validate(root: Path | None = None) -> pd.DataFrame:
             means = audit_mod._weighted_group_means(tiles, by).reset_index()
             means["group"] = np.where(means["indigenous"] == 1, "Indigenous", "Non-Indigenous")
             gaps[by] = _decile_gap(means, by=by)
+        no_bias = audit_mod.calibration_benchmark(tiles, cfg["audit"]["calibration_permutations"], rng)
         rows.append(
             {
                 "world": world,
@@ -355,6 +361,8 @@ def validate(root: Path | None = None) -> pd.DataFrame:
                 "rank_error_ci_high": reg["ci_high"],
                 "separation_gap_pp": gaps["truth_decile"],
                 "calibration_gap_pp": gaps["map_decile"],
+                "calibration_gap_no_bias_pp": no_bias["mean"],
+                "calibration_gap_no_bias_p975": no_bias["p975"],
                 "coverage_coef": cov["coef"],
                 "coverage_ci_low": cov["ci_low"],
                 "coverage_ci_high": cov["ci_high"],

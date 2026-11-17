@@ -96,8 +96,10 @@ Each metric matches the decision the map feeds. Full rationale: [Methods → Eva
   variance are reported for every model and group, because a model can lower its RMSE by pulling predictions
   toward the average.
 - **Two views of rank error.** The separation view (by true decile) is confirmatory. The calibration view
-  (by map decile) is secondary, and is compared with its value in a synthetic world without planted bias,
-  because groups that differ in average wealth show a gap in this view even when the map's errors ignore group.
+  (by map decile) is secondary. Groups that differ in average wealth show a gap in this view even when the
+  map's errors ignore group, so the gap is compared with a no-bias benchmark computed from the same data:
+  its mean and 95% range over 200 shuffles of the map's values among tiles at the same census percentile
+  ([Methods](methods.md#two-views-of-fairness)).
 - **Paired comparisons.** Models are compared on the same simulated survey within each replication.
 - **Denominators.** Each analysis reports the share of the in-scope population it covers, by group, with
   localities whose census data are suppressed as a separate group.

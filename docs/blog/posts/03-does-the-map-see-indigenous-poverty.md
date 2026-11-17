@@ -37,15 +37,17 @@ size, remoteness, altitude and state fixed, an all-Indigenous tile is ranked B p
 
 The comparison above holds the *truth* fixed. A program officer sees only the map, so the other question
 is: among places the map ranks the same, are Indigenous ones poorer? Groups that differ in average
-wealth produce a gap here even for a map whose errors ignore group, so I compare it with the gap in a
-synthetic world with no bias planted ([validation](../../validation.md)), not with zero.
+wealth produce a gap here even for a map whose errors ignore group, so I compare it with a no-bias
+benchmark computed from the same data (the map's values shuffled among equally poor places), not with
+zero.
 
 ![Rank error by map decile](../../assets/figures/real/map_decile_errors.png#only-light)
 ![Rank error by map decile](../../assets/figures/real/map_decile_errors-dark.png#only-dark)
 
-[[FILL from map_decile_errors.csv and audit_summary.json (calibration_gap_pp): is the gap larger than
-the synthetic benchmark? If it is, a group-blind targeting rule based on the map under-serves Indigenous
-places even where the map ranks them correctly on average.]]
+[[FILL from map_decile_errors.csv and audit_summary.json (calibration_gap_pp against
+calibration_gap_no_bias_pp and its range): is the gap beyond the no-bias range? If it is, a group-blind
+targeting rule based on the map under-serves Indigenous places even where the map ranks them correctly
+on average.]]
 
 ## How much does each control explain?
 

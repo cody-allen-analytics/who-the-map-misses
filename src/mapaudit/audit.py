@@ -10,7 +10,8 @@ Three questions, each with its own table:
 3. Rank error by map decile ("calibration" view): among places the map ranks the same, are the
    Indigenous ones actually poorer? This is what a program using the map experiences. When groups
    differ in average wealth, a map with group-blind noise passes the first test and fails this one,
-   so the two views are reported side by side (see docs/methods.md).
+   so the two views are reported side by side (see docs/methods.md), and the calibration gap is read
+   against a no-bias benchmark computed from the data themselves (``calibration_benchmark``).
 4. Regressions: does the Indigenous coefficient survive controls for rurality, remoteness, true
    wealth, and state? Standard errors are clustered by municipality; H2 is tested one-sided.
 """
@@ -74,6 +75,53 @@ def _weighted_group_means(df: pd.DataFrame, by: str = "truth_decile") -> pd.Data
     agg = tmp.groupby([by, "indigenous"]).agg(wx=("_wx", "sum"), pop=("pop", "sum"), n=("pop", "size"))
     agg["mean_error"] = agg["wx"] / agg["pop"]
     return agg
+
+
+def group_gap(tiles: pd.DataFrame, by: str = "truth_decile") -> float:
+    """Indigenous minus non-Indigenous mean rank error within deciles of ``by``, averaged with weights
+    equal to the Indigenous population in each decile."""
+    agg = _weighted_group_means(tiles, by)
+    wide = agg["mean_error"].unstack("indigenous")
+    if 0 not in wide or 1 not in wide:
+        return float("nan")
+    weights = agg["pop"].unstack("indigenous")[1]
+    ok = wide[0].notna() & wide[1].notna() & weights.notna()
+    if not ok.any():
+        return float("nan")
+    return float(np.average(wide.loc[ok, 1] - wide.loc[ok, 0], weights=weights[ok]))
+
+
+def calibration_benchmark(
+    tiles: pd.DataFrame, n_perm: int, rng: np.random.Generator, bins: int = 100
+) -> dict[str, float]:
+    """The calibration gap a map with group-blind errors would show on these same data.
+
+    If the map treats groups alike given the truth (separation), its values are exchangeable among
+    tiles at the same census percentile. Shuffling them within percentile bins keeps the real truth,
+    groups, population weights and map noise, and removes only a group-specific error, so the
+    calibration gap of each shuffled map is a draw from its no-bias distribution. Unlike a gap taken
+    from a synthetic world, this benchmark reflects the real difference in wealth between groups and
+    the real map's accuracy.
+    """
+    truth_pct = tiles["truth_pct"].to_numpy(dtype=float)
+    rwi_pct = tiles["rwi_pct"].to_numpy(dtype=float)
+    truth_bin = np.clip(np.floor(truth_pct * bins).astype(int), 0, bins - 1)
+    slots = np.lexsort((np.arange(len(tiles)), truth_bin))  # tile positions, grouped by bin
+    base = pd.DataFrame({"pop": tiles["pop"].to_numpy(), "indigenous": tiles["indigenous"].to_numpy()})
+    gaps = np.empty(n_perm)
+    for b in range(n_perm):
+        shuffled = np.empty(len(tiles))
+        shuffled[slots] = rwi_pct[np.lexsort((rng.random(len(tiles)), truth_bin))]
+        sim = base.assign(
+            rank_error=100 * (shuffled - truth_pct),
+            map_decile=np.clip(np.floor(shuffled * 10).astype(int) + 1, 1, 10),
+        )
+        gaps[b] = group_gap(sim, "map_decile")
+    return {
+        "mean": float(np.nanmean(gaps)),
+        "p025": float(np.nanpercentile(gaps, 2.5)),
+        "p975": float(np.nanpercentile(gaps, 97.5)),
+    }
 
 
 def decile_errors(

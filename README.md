@@ -31,7 +31,7 @@ Full results with a table under every figure: **[project website](https://cody-a
 
 | Question | Approach | Code |
 |---|---|---|
-| Does the deployed map misrank Indigenous places? | Rank error within true wealth deciles (separation) and within map deciles (calibration); weighted regressions with municipality-clustered SEs; cluster bootstrap; Holm-adjusted confirmatory tests | [`audit.py`](src/mapaudit/audit.py) |
+| Does the deployed map misrank Indigenous places? | Rank error within true wealth deciles (separation) and within map deciles (calibration), the latter read against a no-bias benchmark from within-percentile permutations of the map; weighted regressions with municipality-clustered SEs; cluster bootstrap; Holm-adjusted confirmatory tests | [`audit.py`](src/mapaudit/audit.py) |
 | Is it Indigeneity or just rurality and poverty? | Cumulative controls for size, remoteness, true decile and state; pre-specified robustness | [`audit.py`](src/mapaudit/audit.py), [`pipeline.py`](src/mapaudit/pipeline.py) |
 | Does the definition of poverty matter? | Three labels from one census (DHS-style assets, infrastructure deprivation, CONAPO-style marginalization) | [`labels.py`](src/mapaudit/labels.py) |
 | Can a foundation model do better? | Simulated two-stage survey; gradient boosting on AlphaEarth embeddings vs. a Fay-Herriot model with municipality random effects, written from scratch (REML) | [`survey.py`](src/mapaudit/survey.py), [`sae.py`](src/mapaudit/sae.py), [`ml.py`](src/mapaudit/ml.py) |

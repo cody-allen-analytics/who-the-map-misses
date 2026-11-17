@@ -56,8 +56,11 @@ average community. Indigenous localities are many and small, so I report both.
 When groups differ in average wealth, an imperfect map can't pass both tests. I checked on synthetic
 data: a map whose errors ignore Indigenous status entirely passes the first and still fails the second
 by several percentile points, because places that look alike on the map regress toward their own
-group's average. So the confirmatory test asks the first question, and the second is read against
-that synthetic benchmark rather than against zero.
+group's average. So the confirmatory test asks the first question, and the second is read against a
+no-bias benchmark rather than against zero. I compute that benchmark from the real data: shuffling the
+map's values among places that are equally poor in the census keeps everything about the map except
+any group-specific error, so the shuffled maps show how big the gap would be if the map treated both
+groups alike.
 
 ## The rest of the scorecard
 

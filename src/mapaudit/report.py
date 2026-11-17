@@ -148,11 +148,18 @@ def _headline(summary: dict) -> list[str]:
             f"by {s['decile_conditional_gap_pp']:+.1f} points (weighted by Indigenous population)."
         )
     if "calibration_gap_pp" in s:
-        lines.append(
+        line = (
             f"- **Among places the map ranks the same**, Indigenous tiles' rank error is "
-            f"{s['calibration_gap_pp']:+.1f} points higher, i.e. they are poorer than the map says. This view "
-            f"can show a gap even for a map with group-blind errors, because groups differ in average wealth."
+            f"{s['calibration_gap_pp']:+.1f} points higher, i.e. they are poorer than the map says."
         )
+        if "calibration_gap_no_bias_pp" in s:
+            lo, hi = s["calibration_gap_no_bias_range_pp"]
+            line += (
+                f" A map with group-blind errors would show {s['calibration_gap_no_bias_pp']:+.1f} points on these "
+                f"data (95% range {lo:+.1f} to {hi:+.1f}), because groups differ in average wealth; only a gap "
+                f"beyond that range points to errors specific to Indigenous places."
+            )
+        lines.append(line)
     if "population_covered_indigenous" in s:
         lines.append(
             f"- **Coverage.** {s['population_covered_indigenous']:.1%} of the Indigenous rural population lies inside a "
@@ -203,7 +210,9 @@ def write_page(mode: str, root: Path | None = None) -> Path:
                 "without. Without it, the coefficient and the equally-poor gap should be near zero. The "
                 "ranked-equally gap need not be: when groups differ in average wealth, a map whose errors "
                 "ignore group still shows a gap among places it ranks the same "
-                "(see [Methods](methods.md#two-views-of-fairness)).",
+                "(see [Methods](methods.md#two-views-of-fairness)). The no-bias benchmark estimates that gap "
+                "from each world's own data; the ranked-equally gap should stay within its range without "
+                "the planted bias and exceed it with the bias.",
                 "",
                 _figure(
                     rel, "validation", "Validation: estimated coefficients with and without planted bias"
@@ -218,6 +227,8 @@ def write_page(mode: str, root: Path | None = None) -> Path:
                         "rank_error_ci_high": ("CI high", "pp"),
                         "separation_gap_pp": ("Gap: equally poor (pp)", "pp"),
                         "calibration_gap_pp": ("Gap: ranked equally (pp)", "pp"),
+                        "calibration_gap_no_bias_pp": ("No-bias benchmark (pp)", "pp"),
+                        "calibration_gap_no_bias_p975": ("Benchmark 97.5% (pp)", "pp"),
                         "coverage_coef": ("Coverage coef", "f3"),
                     },
                 ),
@@ -284,7 +295,10 @@ def write_page(mode: str, root: Path | None = None) -> Path:
          [("decile_errors", {"truth_decile": ("True decile", "int"), **decile_cols}, None)]),
         ("map_decile_errors", "Places the map ranks the same (calibration view)",
          "Read with the previous figure: when groups differ in average wealth, a map whose errors ignore "
-         "group can pass the separation test and still fail this one.",
+         "group can pass the separation test and still fail this one. The headline numbers therefore compare "
+         "the gap with a no-bias benchmark computed from these data: the map's values shuffled among tiles at "
+         "the same census percentile, which keeps the real groups and map noise but removes any "
+         "group-specific error.",
          [("map_decile_errors", {"map_decile": ("Map decile", "int"), **decile_cols}, None)]),
         ("audit_specs", "Indigenous coefficient across specifications", None,
          [("audit_regressions", {"spec": ("Specification", "str"), "coef": ("Coef (pp)", "pp"),

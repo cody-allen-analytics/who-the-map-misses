@@ -28,6 +28,7 @@ labels:
 
 audit:
   bootstrap_reps: 300          # municipality-cluster bootstrap for decile-conditional errors
+  calibration_permutations: 200  # within-percentile shuffles for the calibration view's no-bias benchmark
   weight_by_population: true
 
 survey:                         # simulated household survey used to train challenger models

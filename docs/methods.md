@@ -36,6 +36,12 @@ mechanism from the comparison. Confidence bands come from a municipality-cluster
 remoteness, altitude, true decile, state), weights equal to tile population, standard errors
 clustered by municipality. Constant controls are dropped automatically.
 
+Conditioning on the true *decile* rather than the exact percentile could, in principle, leave some
+compression inside the Indigenous coefficient if Indigenous tiles sat lower within deciles. Simulated
+worlds in which the map's errors ignore group, while Indigenous places are poorer, show no such
+leakage: the coefficient is centred on zero, and finer percentile controls do not do better. A test
+keeps this checked (`tests/test_specification.py`).
+
 **Coverage.** A linear probability model of whether a locality falls inside any RWI tile, on
 Indigenous share, log population and log distance to the nearest city.
 
@@ -60,9 +66,16 @@ E[\text{truth} \mid \text{map} = m,\ g] = \mu_g + k\,(m - \mu_g), \qquad k = \fr
 
 so the group with the lower average is poorer at every map value. The audit therefore uses the separation
 view for the confirmatory test (H2), because it isolates how the map treats a place given its true
-condition, and reports the calibration view as what someone who sees only the map experiences. The
-calibration gap is read against its value in a synthetic world with no planted bias
-([validation](validation.md)), not against zero.
+condition, and reports the calibration view as what someone who sees only the map experiences.
+
+The calibration gap is read against a **no-bias benchmark computed from the same data**, not against
+zero. If the map's errors ignore group, its values are interchangeable among tiles at the same census
+percentile, so the audit shuffles them within percentile bins 200 times and recomputes the gap each time.
+The shuffles keep the real wealth difference between groups, the population weights and the map's real
+accuracy, and remove only a group-specific error; their mean and 95% range are what a group-blind map
+would show. A single synthetic world cannot play this role: the gap it shows depends on that world's
+made-up wealth difference and map noise, and it varies noticeably even between worlds drawn with
+identical settings.
 
 ## Challenger models
 
@@ -162,6 +175,11 @@ Coverage, width and interval score are reported separately for localities inside
 least 10 dwellings) and outside it, because conformal guarantees require calibration and test points to be
 exchangeable.
 
+The calibration scores compare predictions with the *survey's* estimates, which carry sampling error,
+while coverage is scored against the census truth. That is the only calibration a real survey allows,
+and it makes the intervals somewhat conservative for the truth: an observed shortfall in coverage is, if
+anything, understated.
+
 ## Allocation
 
 - **Targeting:** select the localities predicted to be most deprived until 20% of the rural
@@ -178,8 +196,9 @@ exchangeable.
 
 `mapaudit validate` generates synthetic worlds with and without a planted Indigenous bias and checks
 that the audit finds it only when it is there. The same check runs in CI (`tests/test_validation.py`).
-The world without bias also supplies the benchmark for the calibration view, and a test checks that this
-view shows a gap the separation view does not (`tests/test_metrics.py`).
+The world without bias also shows the calibration view producing a gap that the separation view does
+not (`tests/test_metrics.py`), and tests check that the shuffled no-bias benchmark absorbs that gap when
+no bias is planted and is exceeded when one is.
 
 ## Limitations
 
@@ -187,6 +206,10 @@ view shows a gap the separation view does not (`tests/test_metrics.py`).
 - Ecological inference: results are about places, not individual households.
 - The RWI was estimated around 2021 from 2010s surveys and imagery; the census is from 2020.
 - A 500 m buffer is a modelling choice for embedding features.
+- The simulated survey draws each housing deprivation independently, because the census reports them
+  separately and not jointly. Real surveys observe all four in the same dwellings, which are correlated,
+  so real survey estimates are noisier than the simulated ones; the simulation is, if anything, kind to
+  methods that lean on the survey.
 - Language- and household-based census measures undercount people who self-identify as Indigenous.
 
 ## Extensions
