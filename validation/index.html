@@ -1193,7 +1193,7 @@ pipeline runs end to end and that the audit can detect a bias of known size. It 
 Real results live on the <a href="../results/">Results</a> page.</p>
 </div>
 <h2 id="does-the-audit-find-a-planted-bias-and-only-when-it-is-there">Does the audit find a planted bias, and only when it is there?<a class="headerlink" href="#does-the-audit-find-a-planted-bias-and-only-when-it-is-there" title="Permanent link">&para;</a></h2>
-<p>Two fresh synthetic worlds drawn with the demo settings, one with the planted bias and one without. Without it, the coefficient and the equally-poor gap should be near zero. The ranked-equally gap need not be: when groups differ in average wealth, a map whose errors ignore group still shows a gap among places it ranks the same (see <a href="../methods/#two-views-of-fairness">Methods</a>).</p>
+<p>Two fresh synthetic worlds drawn with the demo settings, one with the planted bias and one without. Without it, the coefficient and the equally-poor gap should be near zero. The ranked-equally gap need not be: when groups differ in average wealth, a map whose errors ignore group still shows a gap among places it ranks the same (see <a href="../methods/#two-views-of-fairness">Methods</a>). The no-bias benchmark estimates that gap from each world's own data; the ranked-equally gap should stay within its range without the planted bias and exceed it with the bias.</p>
 <p><img alt="Validation: estimated coefficients with and without planted bias" src="../assets/figures/demo/validation.png#only-light" />
 <img alt="Validation: estimated coefficients with and without planted bias" src="../assets/figures/demo/validation-dark.png#only-dark" /></p>
 <table>
@@ -1206,6 +1206,8 @@ Real results live on the <a href="../results/">Results</a> page.</p>
 <th>CI high</th>
 <th>Gap: equally poor (pp)</th>
 <th>Gap: ranked equally (pp)</th>
+<th>No-bias benchmark (pp)</th>
+<th>Benchmark 97.5% (pp)</th>
 <th>Coverage coef</th>
 </tr>
 </thead>
@@ -1218,6 +1220,8 @@ Real results live on the <a href="../results/">Results</a> page.</p>
 <td>+30.9</td>
 <td>+12.0</td>
 <td>+12.9</td>
+<td>+3.9</td>
+<td>+5.6</td>
 <td>-0.072</td>
 </tr>
 <tr>
@@ -1228,6 +1232,8 @@ Real results live on the <a href="../results/">Results</a> page.</p>
 <td>+4.8</td>
 <td>-0.8</td>
 <td>+4.3</td>
+<td>+5.3</td>
+<td>+6.6</td>
 <td>-0.010</td>
 </tr>
 </tbody>
@@ -1259,7 +1265,7 @@ Real results live on the <a href="../results/">Results</a> page.</p>
 <ul>
 <li><strong>Rank bias.</strong> Holding true wealth decile, settlement size, remoteness, altitude, and state fixed, the map ranks an all-Indigenous tile <strong>+20.3 percentile points</strong> higher than a non-Indigenous tile relative to the census (95% CI +15.1 to +25.5; one-sided p = 1.14e-14, Holm-adjusted p = 2.28e-14).</li>
 <li><strong>Within the same true decile</strong>, Indigenous tiles' average rank error exceeds non-Indigenous tiles' by +8.6 points (weighted by Indigenous population).</li>
-<li><strong>Among places the map ranks the same</strong>, Indigenous tiles' rank error is +13.8 points higher, i.e. they are poorer than the map says. This view can show a gap even for a map with group-blind errors, because groups differ in average wealth.</li>
+<li><strong>Among places the map ranks the same</strong>, Indigenous tiles' rank error is +13.8 points higher, i.e. they are poorer than the map says. A map with group-blind errors would show +7.8 points on these data (95% range +5.7 to +9.8), because groups differ in average wealth; only a gap beyond that range points to errors specific to Indigenous places.</li>
 <li><strong>Coverage.</strong> 90.9% of the Indigenous rural population lies inside a map tile, vs. 92.8% of the non-Indigenous rural population.</li>
 <li><strong>Money.</strong> Using the map instead of the census in a FAIS-style formula changes the allocation to Indigenous-majority municipalities by <strong>-26.3%</strong> (-102.1 million pesos per billion allocated); 11.6% of the whole budget goes to the wrong municipalities.</li>
 <li><strong>Targeting.</strong> Selecting the poorest 20% by the map leaves out 49% of the truly poorest Indigenous population vs. 35% of the truly poorest non-Indigenous population.</li>
@@ -1537,7 +1543,7 @@ Real results live on the <a href="../results/">Results</a> page.</p>
 </table>
 </details>
 <h2 id="places-the-map-ranks-the-same-calibration-view">Places the map ranks the same (calibration view)<a class="headerlink" href="#places-the-map-ranks-the-same-calibration-view" title="Permanent link">&para;</a></h2>
-<p>Read with the previous figure: when groups differ in average wealth, a map whose errors ignore group can pass the separation test and still fail this one.</p>
+<p>Read with the previous figure: when groups differ in average wealth, a map whose errors ignore group can pass the separation test and still fail this one. The headline numbers therefore compare the gap with a no-bias benchmark computed from these data: the map's values shuffled among tiles at the same census percentile, which keeps the real groups and map noise but removes any group-specific error.</p>
 <p><img alt="Places the map ranks the same (calibration view)" src="../assets/figures/demo/map_decile_errors.png#only-light" />
 <img alt="Places the map ranks the same (calibration view)" src="../assets/figures/demo/map_decile_errors-dark.png#only-dark" /></p>
 <details class="note">

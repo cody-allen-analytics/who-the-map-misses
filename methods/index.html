@@ -1156,6 +1156,11 @@ mechanism from the comparison. Confidence bands come from a municipality-cluster
 <p><strong>Regressions.</strong> Weighted least squares of <span class="arithmatex">\(e_t\)</span> on Indigenous share with cumulative controls (size,
 remoteness, altitude, true decile, state), weights equal to tile population, standard errors
 clustered by municipality. Constant controls are dropped automatically.</p>
+<p>Conditioning on the true <em>decile</em> rather than the exact percentile could, in principle, leave some
+compression inside the Indigenous coefficient if Indigenous tiles sat lower within deciles. Simulated
+worlds in which the map's errors ignore group, while Indigenous places are poorer, show no such
+leakage: the coefficient is centred on zero, and finer percentile controls do not do better. A test
+keeps this checked (<code>tests/test_specification.py</code>).</p>
 <p><strong>Coverage.</strong> A linear probability model of whether a locality falls inside any RWI tile, on
 Indigenous share, log population and log distance to the nearest city.</p>
 <h3 id="two-views-of-fairness">Two views of fairness<a class="headerlink" href="#two-views-of-fairness" title="Permanent link">&para;</a></h3>
@@ -1194,9 +1199,15 @@ E[\text{truth} \mid \text{map} = m,\ g] = \mu_g + k\,(m - \mu_g), \qquad k = \fr
 \]</div>
 <p>so the group with the lower average is poorer at every map value. The audit therefore uses the separation
 view for the confirmatory test (H2), because it isolates how the map treats a place given its true
-condition, and reports the calibration view as what someone who sees only the map experiences. The
-calibration gap is read against its value in a synthetic world with no planted bias
-(<a href="../validation/">validation</a>), not against zero.</p>
+condition, and reports the calibration view as what someone who sees only the map experiences.</p>
+<p>The calibration gap is read against a <strong>no-bias benchmark computed from the same data</strong>, not against
+zero. If the map's errors ignore group, its values are interchangeable among tiles at the same census
+percentile, so the audit shuffles them within percentile bins 200 times and recomputes the gap each time.
+The shuffles keep the real wealth difference between groups, the population weights and the map's real
+accuracy, and remove only a group-specific error; their mean and 95% range are what a group-blind map
+would show. A single synthetic world cannot play this role: the gap it shows depends on that world's
+made-up wealth difference and map noise, and it varies noticeably even between worlds drawn with
+identical settings.</p>
 <h2 id="challenger-models">Challenger models<a class="headerlink" href="#challenger-models" title="Permanent link">&para;</a></h2>
 <p>The census is used as a <em>pseudo-census</em>: a realistic household survey is drawn from it (municipalities
 with probability proportional to population, then localities, then dwellings without replacement),
@@ -1311,6 +1322,10 @@ Three versions: marginal (one quantile), Mondrian by group, and Mondrian by grou
 Coverage, width and interval score are reported separately for localities inside the survey frame (at
 least 10 dwellings) and outside it, because conformal guarantees require calibration and test points to be
 exchangeable.</p>
+<p>The calibration scores compare predictions with the <em>survey's</em> estimates, which carry sampling error,
+while coverage is scored against the census truth. That is the only calibration a real survey allows,
+and it makes the intervals somewhat conservative for the truth: an observed shortfall in coverage is, if
+anything, understated.</p>
 <h2 id="allocation">Allocation<a class="headerlink" href="#allocation" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>Targeting:</strong> select the localities predicted to be most deprived until 20% of the rural
@@ -1326,14 +1341,19 @@ exchangeable.</p>
 <h2 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">&para;</a></h2>
 <p><code>mapaudit validate</code> generates synthetic worlds with and without a planted Indigenous bias and checks
 that the audit finds it only when it is there. The same check runs in CI (<code>tests/test_validation.py</code>).
-The world without bias also supplies the benchmark for the calibration view, and a test checks that this
-view shows a gap the separation view does not (<code>tests/test_metrics.py</code>).</p>
+The world without bias also shows the calibration view producing a gap that the separation view does
+not (<code>tests/test_metrics.py</code>), and tests check that the shuffled no-bias benchmark absorbs that gap when
+no bias is planted and is exceeded when one is.</p>
 <h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Census labels describe dwellings and education, not income or consumption.</li>
 <li>Ecological inference: results are about places, not individual households.</li>
 <li>The RWI was estimated around 2021 from 2010s surveys and imagery; the census is from 2020.</li>
 <li>A 500 m buffer is a modelling choice for embedding features.</li>
+<li>The simulated survey draws each housing deprivation independently, because the census reports them
+  separately and not jointly. Real surveys observe all four in the same dwellings, which are correlated,
+  so real survey estimates are noisier than the simulated ones; the simulation is, if anything, kind to
+  methods that lean on the survey.</li>
 <li>Language- and household-based census measures undercount people who self-identify as Indigenous.</li>
 </ul>
 <h2 id="extensions">Extensions<a class="headerlink" href="#extensions" title="Permanent link">&para;</a></h2>

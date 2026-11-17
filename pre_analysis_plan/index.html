@@ -1250,8 +1250,10 @@ explained by rurality, remoteness and true wealth. Specification 5 is the confir
   variance are reported for every model and group, because a model can lower its RMSE by pulling predictions
   toward the average.</li>
 <li><strong>Two views of rank error.</strong> The separation view (by true decile) is confirmatory. The calibration view
-  (by map decile) is secondary, and is compared with its value in a synthetic world without planted bias,
-  because groups that differ in average wealth show a gap in this view even when the map's errors ignore group.</li>
+  (by map decile) is secondary. Groups that differ in average wealth show a gap in this view even when the
+  map's errors ignore group, so the gap is compared with a no-bias benchmark computed from the same data:
+  its mean and 95% range over 200 shuffles of the map's values among tiles at the same census percentile
+  (<a href="../methods/#two-views-of-fairness">Methods</a>).</li>
 <li><strong>Paired comparisons.</strong> Models are compared on the same simulated survey within each replication.</li>
 <li><strong>Denominators.</strong> Each analysis reports the share of the in-scope population it covers, by group, with
   localities whose census data are suppressed as a separate group.</li>
