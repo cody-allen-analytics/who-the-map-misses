@@ -1031,7 +1031,10 @@ produced by Google and Google DeepMind."</em></p>
 <li>Shares use occupied private dwellings with recorded characteristics (<code>VIVPARH_CV</code>) as denominator.</li>
 <li>Labels: see <a href="../methods/#ground-truth-labels">Methods</a>.</li>
 <li>RWI: quadkeys read as text; if leading zeros were stripped (spreadsheets do this, and every
-   Mexican quadkey starts with 0), the zoom is recovered by checking quadkeys against tile coordinates.</li>
+   Mexican quadkey starts with 0), the zoom is recovered by checking quadkeys against tile coordinates.
+   The Mexico file on HDX has no quadkey column at all, only latitude, longitude, rwi and error. Its
+   coordinates are exactly the centres of zoom-14 tiles, so the quadkey is recomputed from them; a file
+   whose coordinates are not tile centres is rejected.</li>
 <li>Localities are joined to RWI tiles by computing their own quadkey at the RWI zoom.</li>
 </ol>
 <h2 id="known-issues">Known issues<a class="headerlink" href="#known-issues" title="Permanent link">&para;</a></h2>
