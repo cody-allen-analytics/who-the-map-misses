@@ -32,11 +32,11 @@ errors, **not** to be used for targeting.
 
 A survey simulated from the 2020 census: 400 municipalities drawn with probability proportional to
 rural population, 8 localities per municipality, 20 dwellings per locality, localities with at least
-10 dwellings only. 20 replications.
+10 dwellings only. 50 replications.
 
 ## Evaluation
 
-Scored on localities the survey did not visit, in each of 20 replications, for Indigenous and
+Scored on localities the survey did not visit, in each of 50 replications, for Indigenous and
 non-Indigenous localities separately, per person (population-weighted, primary) and per community
 (unweighted). Metrics were fixed in advance; the reasons are in
 [Methods → Evaluation metrics](methods.md#evaluation-metrics).

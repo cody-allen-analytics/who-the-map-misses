@@ -15,7 +15,7 @@ conditions a real statistical office faces: a limited survey, and predictions ne
 
 ## Setting up a fair fight
 
-The census acts as a pseudo-census. Each of 20 replications draws a realistic survey (municipalities
+The census acts as a pseudo-census. Each of 50 replications draws a realistic survey (municipalities
 with probability proportional to population, then localities, then 20 dwellings each), trains every
 model on the survey only, and scores it on the localities the survey never visited.
 

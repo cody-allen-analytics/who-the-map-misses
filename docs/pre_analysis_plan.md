@@ -1,10 +1,10 @@
 # Pre-analysis plan
 
 !!! abstract "Status"
-    **Version 1. Upload this file and create the tag `pap-v1` before running any real-data step past the
-    build** (GitHub → Releases → Draft a new release → Choose a tag → type `pap-v1` → Create new tag on
-    publish). The tag's timestamp is the record that hypotheses and specifications came first. Later
-    changes go in the [deviations log](#deviations-log) with a reason, never by editing the text above it.
+    **Version 1, frozen under the tag `pap-v1`** before any real-data analysis beyond downloading the data
+    and building the locality tables. The tag's timestamp is the record that the hypotheses and
+    specifications came first. Later changes are listed in the [deviations log](#deviations-log) with a
+    reason; the text above it is not edited.
 
 ## 1. Motivation
 
@@ -118,7 +118,7 @@ Each check re-estimates specification 5; `mapaudit robustness` (notebook 03) wri
 
 ## 8. Simulation design (H4, H5)
 
-20 replications. Each draws 400 municipalities with probability proportional to rural population,
+50 replications. Each draws 400 municipalities with probability proportional to rural population,
 8 localities per municipality, and 20 dwellings per locality, among localities with at least 10
 dwellings. Models: night lights (GBM), embeddings (GBM), embeddings (GBM + empirical-Bayes municipality
 effects), embeddings (Fay-Herriot with municipality random effect, 20 principal components). Metrics

@@ -36,7 +36,7 @@ survey:                         # simulated household survey used to train chall
   localities_per_municipality: 8
   dwellings_per_locality: 20
   min_dwellings: 10
-  replications: 20
+  replications: 50              # enough draws for the 95% range in H4 not to hinge on one survey
 
 models:
   cv_folds: 5
