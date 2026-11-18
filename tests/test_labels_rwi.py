@@ -40,3 +40,22 @@ def test_read_rwi_restores_leading_zeros(tmp_path):
     rwi = read_rwi(path)
     assert list(rwi["quadkey"]) == list(qk)
     assert quadkey_consistency(rwi) == pytest.approx(1.0)
+
+
+def test_read_rwi_recovers_quadkeys_from_tile_centres(tmp_path):
+    """The Mexico RWI file has no quadkey column; its coordinates are zoom-14 tile centres."""
+    lat, lon = np.array([17.05, 20.67, 16.75]), np.array([-96.72, -103.35, -93.11])
+    x, y = latlon_to_tile(lat, lon, 14)
+    clat, clon = tile_center(x, y, 14)
+    path = tmp_path / "rwi.csv"
+    pd.DataFrame({"latitude": clat, "longitude": clon, "rwi": [0.1, -0.2, 0.3], "error": 0.4}).to_csv(
+        path, index=False
+    )
+    assert list(read_rwi(path)["quadkey"]) == list(tile_to_quadkey(x, y, 14))
+
+
+def test_read_rwi_refuses_coordinates_that_are_not_tile_centres(tmp_path):
+    path = tmp_path / "rwi.csv"
+    pd.DataFrame({"latitude": [17.0512], "longitude": [-96.7234], "rwi": [0.1]}).to_csv(path, index=False)
+    with pytest.raises(KeyError, match="not tile centres"):
+        read_rwi(path)

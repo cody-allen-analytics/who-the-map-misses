@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 import requests
 
-from mapaudit.geo import latlon_to_quadkey
+from mapaudit.geo import latlon_to_quadkey, latlon_to_tile, tile_center, tile_to_quadkey
 from mapaudit.labels import weighted_percentile_rank
 
 
@@ -33,9 +33,24 @@ def find_rwi_url(api_url: str, package: str, iso3: str, timeout: int = 60) -> st
     )
 
 
+def quadkeys_from_tile_centres(lat: np.ndarray, lon: np.ndarray, zooms=(14, 13, 15, 16)) -> np.ndarray:
+    """Recover quadkeys for an RWI file published without them (the Mexico file has only latitude,
+    longitude, rwi and error). Its coordinates are tile centres, so the key is recomputed at the zoom
+    whose tile centres they match; anything that is not a tile centre is refused rather than guessed."""
+    lat, lon = np.asarray(lat, dtype=float), np.asarray(lon, dtype=float)
+    for zoom in zooms:
+        x, y = latlon_to_tile(lat, lon, zoom)
+        clat, clon = tile_center(x, y, zoom)
+        if np.all(np.maximum(np.abs(clat - lat), np.abs(clon - lon)) < 1e-4):
+            return tile_to_quadkey(x, y, zoom)
+    raise KeyError("RWI file has no quadkey column, and its coordinates are not tile centres at zoom 13-16")
+
+
 def read_rwi(path: Path) -> pd.DataFrame:
     df = pd.read_csv(path, dtype={"quadkey": str})
     df.columns = [c.strip().lower() for c in df.columns]
+    if "quadkey" not in df.columns and {"latitude", "longitude"} <= set(df.columns):
+        df["quadkey"] = quadkeys_from_tile_centres(df["latitude"], df["longitude"])
     required = {"quadkey", "latitude", "longitude", "rwi"}
     missing = required - set(df.columns)
     if missing:

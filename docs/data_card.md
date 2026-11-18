@@ -22,6 +22,9 @@ produced by Google and Google DeepMind."*
 3. Labels: see [Methods](methods.md#ground-truth-labels).
 4. RWI: quadkeys read as text; if leading zeros were stripped (spreadsheets do this, and every
    Mexican quadkey starts with 0), the zoom is recovered by checking quadkeys against tile coordinates.
+   The Mexico file on HDX has no quadkey column at all, only latitude, longitude, rwi and error. Its
+   coordinates are exactly the centres of zoom-14 tiles, so the quadkey is recomputed from them; a file
+   whose coordinates are not tile centres is rejected.
 5. Localities are joined to RWI tiles by computing their own quadkey at the RWI zoom.
 
 ## Known issues
